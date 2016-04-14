@@ -99,25 +99,18 @@ function domouse(evt) {
 	   evt.preventDefault();
 	}
 }
-function onDocumentTouchStart( event ) {
-	if ( event.touches.length === 1 ) {
-		event.preventDefault();
-		mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
-		targetXRotationOnMouseDown = rotateX;
-		mouseYOnMouseDown = event.touches[ 0 ].pageY - windowHalfY;
-		targetYRotationOnMouseDown = rotateY;
-	}
-}
 
 function onDocumentTouchMove( event ) {
 	if ( event.touches.length === 1 ) {
 		event.preventDefault();
 		mouseX = event.touches[ 0 ].pageX - windowHalfX;
-		rotateX = targetXRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.00001;
+		rotateX = targetXRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.01;
+		targetXRotationOnMouseDown = rotateX;
 		mouseY = event.touches[ 0 ].pageY - windowHalfY;
-		rotateY = targetYRotationOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.00001;
-		rotateAroundWorldAxis(cube, new THREE.Vector3(1,0,0), rotateX);
-		rotateAroundWorldAxis(cube, new THREE.Vector3( 0, 1, 0 ), rotateY);
+		rotateY = targetYRotationOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.01;
+		targetYRotationOnMouseDown = rotateY;
+		rotateAroundWorldAxis(cube, new THREE.Vector3(1,0,0), rotateY);
+		rotateAroundWorldAxis(cube, new THREE.Vector3( 0, 1, 0 ), rotateX);
 	        render();
 	}
 }
@@ -175,7 +168,6 @@ function init() {
 	document.addEventListener("mouseup", function(){
 	hover=false;
 	}, false);
-	document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 	document.addEventListener( 'touchmove', onDocumentTouchMove, false );
      }
      catch (e) {
