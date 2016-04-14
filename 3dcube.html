@@ -4,26 +4,21 @@
 <title>3dCube</title>
 <script type="text/javascript" src="http://threejs.org/build/three.min.js"></script>
 <script type="text/javascript">
-
 /*  Show a cube with six differently colored sides using Three.js.
  *  The cube can be rotated using the arrow keys.  The home key
  *  or the return key will reset the rotation to zero.  WebGL
  *  will be used if available.  If not, the program will attempt
  *  to use the canvas 2D API.
  */
-
 // The variables renderer, scene, and camera are the basic requirements
 // for making an image using three.js.
-
 var renderer;  // A three.js WebGL or Canvas renderer.
 var scene;     // The 3D scene that will be rendered, containing the cube.
 var camera;    // The camera that takes the picture of the scene.
-
 var cube; // The three.js object that represents the cube.
 var hover;
 var rotateX = 0.4;   // rotation of cube about the x-axis
 var rotateY = -0.5;  // rotation of cube about the y-axis
-
 var targetXRotationOnMouseDown = 0;
 var targetYRotationOnMouseDown = 0;
 var mouseX = 0;
@@ -32,7 +27,6 @@ var mouseY = 0;
 var mouseYOnMouseDown = 0;
 var windowHalfX = window.innerWidth / 2;
 var windowHalfY = window.innerHeight / 2;
-
 /*  This function is called by the init() method.  Its purpose is
  *  to add objects to the scene.  The scene, camera, and renderer
  *  objects have already been created.
@@ -56,7 +50,6 @@ function createWorld() {
     light.position.set(0,0,1);
     scene.add(light);
 }
-
 /**
  *  The render fucntion creates an image of the scene from the point of view
  *  of the camera and displays it in the canvas.  This is called at the end of
@@ -66,7 +59,6 @@ function createWorld() {
 function render() {
     renderer.render(scene, camera);
 }
-
 /**
  *  An event listener for the keydown event.  It is installed by the init() function.
  */
@@ -87,7 +79,6 @@ function doKey(evt) {
 	   evt.preventDefault();
 	}
 }
-
 function domouse(evt) {
 	if(hover){
 	rotateX = 0.01*(evt.clientY - prevY);prevY = evt.clientY;
@@ -99,25 +90,30 @@ function domouse(evt) {
 	   evt.preventDefault();
 	}
 }
-
 function onDocumentTouchStart( event ) {
 	if ( event.touches.length === 1 ) {
 		event.preventDefault();
-		mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
-		mouseYOnMouseDown = event.touches[ 0 ].pageY - windowHalfY;
+		prevX = event.touches[ 0 ].pageX;
+		prevY = event.touches[ 0 ].pageY;
 	}
 }
-
 function onDocumentTouchMove( event ) {
 	if ( event.touches.length === 1 ) {
 		event.preventDefault();
-		mouseX = event.touches[ 0 ].pageX - windowHalfX;
-		rotateX = rotateX + ( mouseX - mouseXOnMouseDown ) * 0.00001;
-		mouseY = event.touches[ 0 ].pageY - windowHalfY;
-		rotateY = rotateY + ( mouseY - mouseYOnMouseDown ) * 0.00001;
+		mouseX = event.touches[ 0 ].pageX;
+		rotateX = ( mouseX - prevX ) * 0.01;
+		prevX = mouseX;
+		mouseY = event.touches[ 0 ].pageY;
+		rotateY = ( mouseY - prevY ) * 0.01;
+		prevY = mouseY;
 		rotateAroundWorldAxis(cube, new THREE.Vector3(1,0,0), rotateY);
 		rotateAroundWorldAxis(cube, new THREE.Vector3( 0, 1, 0 ), rotateX);
-	        render();
+		/*console.clear();
+		console.log("mouseX = "+mouseX);
+		console.log("mouseY = "+mouseY);
+		console.log("rotateX = "+rotateX);
+		console.log("rotateY = "+rotateY);*/		
+	    render();
 	}
 }
 var rotWorldMatrix;
@@ -181,7 +177,6 @@ function init() {
         document.getElementById("message").innerHTML = "Sorry, an error occurred: " + e;
      }
 }
-
 </script>
 </head>
 <body onload="init()">
