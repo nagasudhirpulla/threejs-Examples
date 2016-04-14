@@ -112,11 +112,9 @@ function onDocumentTouchMove( event ) {
 	if ( event.touches.length === 1 ) {
 		event.preventDefault();
 		mouseX = event.touches[ 0 ].pageX - windowHalfX;
-		rotateX = rotateX + ( mouseX - mouseXOnMouseDown ) * 0.0001;
-		mouseXOnMouseDown = mouseX;
+		rotateX = rotateX + ( mouseX - mouseXOnMouseDown ) * 0.001;
 		mouseY = event.touches[ 0 ].pageY - windowHalfY;
-		rotateY = rotateY + ( mouseY - mouseYOnMouseDown ) * 0.0001;
-		mouseYOnMouseDown = mouseY;
+		rotateY = rotateY + ( mouseY - mouseYOnMouseDown ) * 0.001;
 		rotateAroundWorldAxis(cube, new THREE.Vector3(1,0,0), rotateY);
 		rotateAroundWorldAxis(cube, new THREE.Vector3( 0, 1, 0 ), rotateX);
 	        render();
