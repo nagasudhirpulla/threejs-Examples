@@ -24,6 +24,14 @@ var hover;
 var rotateX = 0.4;   // rotation of cube about the x-axis
 var rotateY = -0.5;  // rotation of cube about the y-axis
 
+var targetXRotationOnMouseDown = 0;
+var targetYRotationOnMouseDown = 0;
+var mouseX = 0;
+var mouseXOnMouseDown = 0;
+var mouseY = 0;
+var mouseYOnMouseDown = 0;
+var windowHalfX = window.innerWidth / 2;
+var windowHalfY = window.innerHeight / 2;
 
 /*  This function is called by the init() method.  Its purpose is
  *  to add objects to the scene.  The scene, camera, and renderer
@@ -91,6 +99,28 @@ function domouse(evt) {
 	   evt.preventDefault();
 	}
 }
+function onDocumentTouchStart( event ) {
+	if ( event.touches.length === 1 ) {
+		event.preventDefault();
+		mouseXOnMouseDown = event.touches[ 0 ].pageX - windowHalfX;
+		targetXRotationOnMouseDown = rotateX;
+		mouseYOnMouseDown = event.touches[ 0 ].pageY - windowHalfY;
+		targetYRotationOnMouseDown = rotateY;
+	}
+}
+
+function onDocumentTouchMove( event ) {
+	if ( event.touches.length === 1 ) {
+		event.preventDefault();
+		mouseX = event.touches[ 0 ].pageX - windowHalfX;
+		rotateX = targetXRotationOnMouseDown + ( mouseX - mouseXOnMouseDown ) * 0.05;
+		mouseY = event.touches[ 0 ].pageY - windowHalfY;
+		rotateY = targetYRotationOnMouseDown + ( mouseY - mouseYOnMouseDown ) * 0.05;
+		rotateAroundWorldAxis(cube, new THREE.Vector3(1,0,0), rotateX);
+		rotateAroundWorldAxis(cube, new THREE.Vector3( 0, 1, 0 ), rotateY);
+	        render();
+	}
+}
 var rotWorldMatrix;
 // Rotate an object around an arbitrary axis in world space       
 function rotateAroundWorldAxis(object, axis, radians) {
@@ -145,6 +175,8 @@ function init() {
 	document.addEventListener("mouseup", function(){
 	hover=false;
 	}, false);
+	document.addEventListener( 'touchstart', onDocumentTouchStart, false );
+	document.addEventListener( 'touchmove', onDocumentTouchMove, false );
      }
      catch (e) {
         document.getElementById("message").innerHTML = "Sorry, an error occurred: " + e;
